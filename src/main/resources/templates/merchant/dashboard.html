@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Mini-Shopify</title><link rel="stylesheet" th:href="@{/style.css}"></head>
+<body><main>
+  <p class="eyebrow">Mini-Shopify · Merchant</p>
+  <h1>Your shops</h1>
+  <p>Create a shop, then add products to its catalog.</p>
+  <a class="button" th:href="@{/merchant/shops/new}">Create a shop</a>
+  <p th:if="${#lists.isEmpty(shops)}">No shops yet.</p>
+  <section class="grid">
+    <article th:each="shop : ${shops}">
+      <h2><a th:href="@{/merchant/shops/{id}(id=${shop.id})}" th:text="${shop.name}"></a></h2>
+      <p th:text="${shop.description}"></p>
+      <p class="tags" th:text="${shop.tags}"></p>
+    </article>
+  </section>
+</main></body></html>
