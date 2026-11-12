@@ -1,26 +1,22 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="|${shop.name} · Mini-Shopify|">Shop · Mini-Shopify</title>
-</head>
-<body>
-<main>
-    <h1 th:text="${shop.name}">Shop</h1>
-    <p th:text="${shop.description}">Shop description</p>
-    <p th:text="${shop.tags}">Categories</p>
-    <p><a th:href="@{/merchant/shops/{id}/products/new(id=${shop.id})}">Add a product</a></p>
-    <h2>Products</h2>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title th:text="${shop.name}">Shop</title><link rel="stylesheet" th:href="@{/style.css}"></head>
+<body><main>
+    <a th:href="@{/merchant}">Back to shops</a>
+    <p role="status" class="success" th:if="${message}" th:text="${message}"></p>
+    <h1 th:text="${shop.name}"></h1>
+    <p th:text="${shop.description}"></p>
+    <p class="tags" th:text="${shop.tags}"></p>
+    <a class="button" th:href="@{/merchant/shops/{id}/products/new(id=${shop.id})}">Add product</a>
+    <h2>Product catalog</h2>
     <p th:if="${#lists.isEmpty(products)}">This shop has no products yet.</p>
-    <article th:each="product : ${products}">
-        <h3 th:text="${product.name}">Product</h3>
-        <img th:src="@{/products/{id}/image(id=${product.id})}" th:alt="${product.name}"
-             width="240" height="240" style="object-fit: contain" loading="lazy">
-        <p th:text="${product.description}">Description</p>
-        <p th:text="|CAD $${#numbers.formatDecimal(product.price, 1, 2)}|">Price</p>
-        <p th:text="|Stock: ${product.inventoryQuantity}|">Stock</p>
-    </article>
-</main>
-</body>
-</html>
+    <section class="grid">
+        <article th:each="product : ${products}">
+            <img th:src="@{/products/{id}/image(id=${product.id})}" th:alt="${product.name}">
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.description}"></p>
+            <p>CAD $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span></p>
+            <p>In stock: <span th:text="${product.inventoryQuantity}"></span></p>
+        </article>
+    </section>
+</main></body></html>

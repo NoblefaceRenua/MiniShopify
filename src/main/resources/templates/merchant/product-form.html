@@ -1,44 +1,26 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add a product · Mini-Shopify</title>
-</head>
-<body>
-<main>
-    <h1 th:text="|Add a product to ${shop.name}|">Add a product</h1>
-    <form method="post" enctype="multipart/form-data"
-          th:action="@{/merchant/shops/{id}/products(id=${shop.id})}" th:object="${productForm}">
-        <p th:if="${#fields.hasAnyErrors()}" role="alert">Please correct the fields below. Select your picture again before saving.</p>
-        <p>
-            <label for="name">Name</label>
-            <input id="name" th:field="*{name}" maxlength="100" required>
-            <span th:errors="*{name}" role="alert"></span>
-        </p>
-        <p>
-            <label for="description">Description</label>
-            <textarea id="description" th:field="*{description}" maxlength="1000" required></textarea>
-            <span th:errors="*{description}" role="alert"></span>
-        </p>
-        <p>
-            <label for="price">Price (CAD)</label>
-            <input id="price" th:field="*{price}" type="number" min="0.01" max="9999999999.99" step="0.01" required>
-            <span th:errors="*{price}" role="alert"></span>
-        </p>
-        <p>
-            <label for="inventoryQuantity">Stock quantity</label>
-            <input id="inventoryQuantity" th:field="*{inventoryQuantity}" type="number" min="0" max="2147483647" step="1" required>
-            <span th:errors="*{inventoryQuantity}" role="alert"></span>
-        </p>
-        <p>
-            <label for="image">Picture (PNG or JPEG, up to 5 MB and 20 million pixels)</label>
-            <input id="image" name="image" type="file" accept="image/png,image/jpeg" required>
-            <span th:errors="*{image}" role="alert"></span>
-        </p>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Add product</title><link rel="stylesheet" th:href="@{/style.css}"></head>
+<body><main>
+    <a th:href="@{/merchant/shops/{id}(id=${shop.id})}">Back to shop</a>
+    <h1>Add product</h1>
+    <p>Shop: <span th:text="${shop.name}"></span></p>
+    <form th:action="@{/merchant/shops/{id}/products(id=${shop.id})}" th:object="${productForm}" method="post" enctype="multipart/form-data">
+        <label for="name">Product name</label>
+        <input id="name" th:field="*{name}" maxlength="100" required>
+        <p class="error" th:errors="*{name}"></p>
+        <label for="description">Description</label>
+        <textarea id="description" th:field="*{description}" maxlength="1000" required></textarea>
+        <p class="error" th:errors="*{description}"></p>
+        <label for="price">Price (CAD)</label>
+        <input id="price" th:field="*{price}" type="number" min="0.01" max="9999999999.99" step="0.01" required>
+        <p class="error" th:errors="*{price}"></p>
+        <label for="inventoryQuantity">Inventory quantity</label>
+        <input id="inventoryQuantity" th:field="*{inventoryQuantity}" type="number" min="0" step="1" required>
+        <p class="error" th:errors="*{inventoryQuantity}"></p>
+        <label for="image">Picture (PNG or JPEG, maximum 5 MB)</label>
+        <input id="image" name="image" type="file" accept="image/png,image/jpeg" required>
+        <p class="error" th:errors="*{image}"></p>
         <button type="submit">Save product</button>
-        <a th:href="@{/merchant/shops/{id}(id=${shop.id})}">Cancel</a>
     </form>
-</main>
-</body>
-</html>
+</main></body></html>
