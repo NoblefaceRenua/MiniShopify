@@ -16,4 +16,18 @@
         <p class="error" th:errors="*{tags}"></p>
         <button type="submit">Create shop</button>
     </form>
+  <a th:href="@{/merchant}">Back to shops</a>
+  <h1>Create a shop</h1>
+  <form th:action="@{/merchant/shops}" th:object="${shopForm}" method="post">
+    <label for="name">Shop name</label>
+    <input id="name" th:field="*{name}" maxlength="100" required>
+    <p class="error" th:errors="*{name}"></p>
+    <label for="description">Description</label>
+    <textarea id="description" th:field="*{description}" maxlength="1000" required></textarea>
+    <p class="error" th:errors="*{description}"></p>
+    <label for="tags">Categories / tags (separate with commas)</label>
+    <input id="tags" th:field="*{tags}" placeholder="clothes, vintage, handmade" maxlength="250" required>
+    <p class="error" th:errors="*{tags}"></p>
+    <button type="submit">Create shop</button>
+  </form>
 </main></body></html>
