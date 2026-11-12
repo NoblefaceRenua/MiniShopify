@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Error · Mini-Shopify</title>
+</head>
+<body>
+<main>
+    <h1 th:text="${status == 404} ? 'Page not found' : 'Something went wrong'">Page not found</h1>
+    <p th:if="${status == 404}">The page or item you were looking for doesn't exist.</p>
+    <p th:unless="${status == 404}">Please try again in a moment.</p>
+    <p>Error code: <span th:text="${status}">404</span></p>
+    <p><a th:href="@{/}">Back to home</a></p>
+</main>
+</body>
+</html>
