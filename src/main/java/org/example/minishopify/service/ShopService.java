@@ -1,6 +1,7 @@
 package org.example.minishopify.service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 import org.example.minishopify.model.Shop;
@@ -15,6 +16,10 @@ public class ShopService {
     private final ShopRepository shops;
 
     public ShopService(ShopRepository shops) { this.shops = shops; }
+
+    public List<Shop> listShops() {
+        return shops.findAll();
+    }
 
     public Shop getShop(Long id) {
         return shops.findById(id).orElseThrow(() ->
