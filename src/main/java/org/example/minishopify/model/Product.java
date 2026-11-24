@@ -17,8 +17,7 @@ public class Product {
     private BigDecimal price;
     @Column(nullable = false)
     private int inventoryQuantity;
-    @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, length = 6_000_000)
     private byte[] imageData;
     @Column(nullable = false, length = 30)
     private String imageContentType;
