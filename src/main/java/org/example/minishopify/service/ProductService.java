@@ -64,4 +64,45 @@ public class ProductService {
                 (data[1] & 255) == 216 && (data[2] & 255) == 255) return "image/jpeg";
         throw new IllegalArgumentException("Only PNG and JPEG pictures are supported.");
     }
+
+    public Product getProductInShop(Long shopId, Long productId) {
+        Product product = getProduct(productId);               // 404 if the product doesn't exist
+        if (!product.getShop().getId().equals(shopId)) {       // wrong shop in the URL
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        return product;
+    }
+
+    public Product updateProduct(Long shopId, Long productId, ProductForm form) {
+        Product product = getProductInShop(shopId, productId);
+        MultipartFile file = form.getImage();
+        if (file != null && !file.isEmpty()) {
+            if (file.getSize() > 5 * 1024 * 1024) {
+                throw new IllegalArgumentException("Picture must be 5 MB or smaller.");
+            }
+            try {
+                byte[] bytes = file.getBytes();
+                String type = imageType(bytes);
+                if (ImageIO.read(new ByteArrayInputStream(bytes)) == null) {
+                    throw new IllegalArgumentException("The picture could not be read.");
+                }
+                product.replaceImage(bytes, type);
+            } catch (IOException ex) {
+                throw new IllegalArgumentException("The picture could not be read.");
+            }
+        }
+        product.update(form.getName().trim(), form.getDescription().trim(),
+                form.getPrice(), form.getInventoryQuantity());
+        return products.save(product);
+    }
+
+    public void deleteProduct(Long shopID, Long productID){
+        Product product = getProductInShop(shopID, productID);
+        if (!product.getShop().getId().equals(shopID)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+        }
+        products.delete(product);
+    }
+
+
 }
