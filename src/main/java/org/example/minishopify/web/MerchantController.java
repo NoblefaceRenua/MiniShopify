@@ -1,6 +1,7 @@
 package org.example.minishopify.web;
 
 import jakarta.validation.Valid;
+import org.example.minishopify.model.Product;
 import org.example.minishopify.model.Shop;
 import org.example.minishopify.repository.ShopRepository;
 import org.example.minishopify.service.ProductService;
@@ -89,6 +90,45 @@ public class MerchantController {
             return "merchant/product-form";
         }
         redirect.addFlashAttribute("message", "Product added.");
+        return "redirect:/merchant/shops/" + id;
+    }
+
+    @GetMapping("/shops/{id}/products/{productId}/edit")
+    public String editProduct(@PathVariable Long id, @PathVariable Long productId, Model model) {
+        Product product = products.getProductInShop(id, productId);
+        ProductForm form = new ProductForm();
+        form.setName(product.getName());
+        form.setDescription(product.getDescription());
+        form.setPrice(product.getPrice());
+        form.setInventoryQuantity(product.getInventoryQuantity());
+        model.addAttribute("shop", shops.getShop(id));
+        model.addAttribute("product", product);
+        model.addAttribute("productForm", form);
+        return "merchant/product-edit";
+    }
+
+    @PostMapping("/shops/{id}/products/{productId}/delete")
+    public String deleteProduct(RedirectAttributes redirect, @PathVariable Long id, @PathVariable Long productId){
+        products.deleteProduct(id, productId);
+        redirect.addFlashAttribute("message", "Product deleted.");
+        return "redirect:/merchant/shops/" + id;
+    }
+
+    @PostMapping("/shops/{id}/products/{productId}")
+    public String updateProduct(@PathVariable Long id, @PathVariable Long productId,
+                                @Valid @ModelAttribute ProductForm productForm,
+                                BindingResult errors, Model model,
+                                RedirectAttributes redirect) {
+        model.addAttribute("shop", shops.getShop(id));
+        model.addAttribute("product", products.getProductInShop(id, productId));
+        if (errors.hasErrors()) return "merchant/product-edit";
+        try {
+            products.updateProduct(id, productId, productForm);
+        } catch (IllegalArgumentException ex) {
+            errors.rejectValue("image", "invalid", ex.getMessage());
+            return "merchant/product-edit";
+        }
+        redirect.addFlashAttribute("message", "Product updated.");
         return "redirect:/merchant/shops/" + id;
     }
 }
