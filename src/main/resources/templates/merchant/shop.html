@@ -17,6 +17,11 @@
             <p th:text="${product.description}"></p>
             <p>CAD $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span></p>
             <p>In stock: <span th:text="${product.inventoryQuantity}"></span></p>
+            <a th:href="@{/merchant/shops/{id}/products/{pid}/edit(id=${shop.id},pid=${product.id})}">Edit</a>
+            <form method="post" th:action="@{/merchant/shops/{id}/products/{pid}/delete(id=${shop.id},pid=${product.id})}"
+                  onsubmit="return confirm('Delete this product?');" style="padding:0;border:0;display:inline">
+                <button type="submit">Delete</button>
+            </form>
         </article>
     </section>
 </main></body></html>

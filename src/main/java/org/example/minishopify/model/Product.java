@@ -48,4 +48,17 @@ public class Product {
     public byte[] getImageData() { return imageData; }
     public String getImageContentType() { return imageContentType; }
     public Shop getShop() { return shop; }
+
+    public void update(String name, String description, BigDecimal price, int inventoryQuantity){
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.inventoryQuantity = inventoryQuantity;
+    }
+
+    public void replaceImage(byte[] imageData, String imageContentType) {
+        this.imageData = imageData;
+        this.imageContentType = imageContentType;
+    }
+
 }
