@@ -26,8 +26,17 @@ public class MerchantController {
     }
 
     @GetMapping
-    public String dashboard(Model model) {
-        model.addAttribute("shops", shopRepository.findAll());
+    public String dashboard(@RequestParam(required = false) String q,
+                            Model model) {
+
+        if (q == null || q.isBlank()) {
+            model.addAttribute("shops", shopRepository.findAll());
+        } else {
+            model.addAttribute("shops", shopRepository.searchShops(q.trim()));
+        }
+
+        model.addAttribute("q", q == null ? "" : q.trim());
+
         return "merchant/dashboard";
     }
 
