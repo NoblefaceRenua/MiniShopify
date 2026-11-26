@@ -10,6 +10,7 @@ import org.example.minishopify.web.ShopForm;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ShopService {
@@ -36,5 +37,35 @@ public class ShopService {
         }
         return shops.save(new Shop(form.getName().trim(),
                 form.getDescription().trim(), tags));
+    }
+
+    private String normalizeTags(String input) {
+        String tags = Arrays.stream(input.split(","))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .map(tag -> tag.toLowerCase(Locale.ROOT))
+                .distinct()
+                .collect(Collectors.joining(", "));
+
+        if (tags.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Enter at least one category or tag.");
+        }
+
+        return tags;
+    }
+
+    @Transactional
+    public Shop updateShop(Long id, ShopForm form) {
+        Shop shop = getShop(id);
+        String tags = normalizeTags(form.getTags());
+
+        shop.update(
+                form.getName().trim(),
+                form.getDescription().trim(),
+                tags
+        );
+
+        return shops.save(shop);
     }
 }

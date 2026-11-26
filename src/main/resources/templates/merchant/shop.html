@@ -8,6 +8,10 @@
     <p th:text="${shop.description}"></p>
     <p class="tags" th:text="${shop.tags}"></p>
     <a class="button" th:href="@{/merchant/shops/{id}/products/new(id=${shop.id})}">Add product</a>
+    <a class="button"
+       th:href="@{/merchant/shops/{id}/edit(id=${shop.id})}">
+        Edit shop
+    </a>
     <h2>Product catalog</h2>
     <p th:if="${#lists.isEmpty(products)}">This shop has no products yet.</p>
     <section class="grid">
