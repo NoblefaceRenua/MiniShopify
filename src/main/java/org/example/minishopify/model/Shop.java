@@ -27,4 +27,10 @@ public class Shop {
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getTags() { return tags; }
+
+    public void update(String name, String description, String tags) {
+        this.name = name;
+        this.description = description;
+        this.tags = tags;
+    }
 }
