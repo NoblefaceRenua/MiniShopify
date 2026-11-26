@@ -125,4 +125,28 @@ class ShopSearchIntegrationTest {
                 .andExpect(content().string(containsString("Back to all shops")))
                 .andExpect(content().string(containsString("/merchant")));
     }
+
+    @Test
+    void searchTrimsSurroundingWhitespace() throws Exception {
+        shop("Electronics World", "gadgets");
+        shop("Fashion Store", "clothes");
+
+        mvc.perform(get("/merchant").param("q", "  gadgets  "))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("q", "gadgets"))
+                .andExpect(content().string(containsString("Electronics World")))
+                .andExpect(content().string(not(containsString("Fashion Store"))));
+    }
+
+    @Test
+    void whitespaceOnlySearchDisplaysAllShops() throws Exception {
+        shop("Electronics World", "gadgets");
+        shop("Fashion Store", "clothes");
+
+        mvc.perform(get("/merchant").param("q", "   "))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("q", ""))
+                .andExpect(content().string(containsString("Electronics World")))
+                .andExpect(content().string(containsString("Fashion Store")));
+    }
 }
