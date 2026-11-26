@@ -22,6 +22,17 @@ public class ShopService {
         return shops.findAll();
     }
 
+    public List<String> listCategories() {
+        return shops.findAll().stream()
+                .flatMap(shop -> Arrays.stream(shop.getTags().split(",")))
+                .map(String::trim)
+                .filter(tag -> !tag.isEmpty())
+                .map(tag -> tag.toLowerCase(Locale.ROOT))
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
     public Shop getShop(Long id) {
         return shops.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Shop not found"));

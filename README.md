@@ -1,8 +1,8 @@
-# Mini-Shopify - Milestone 1 merchant prototype
+# Mini-Shopify - Merchant and customer prototype
 
-This contribution implements the merchant side: create a shop, add products with
-actual picture uploads, and view the saved shop catalog. The customer side can use
-the same Shop and Product models and repositories.
+Merchants can create and edit shops, upload product pictures, and add, edit, or
+delete products. Customers can browse products across shops and search by product
+name and category using the same Shop and Product models and repositories.
 
 ### Here is the link to the MiniShopify application 
 [Minishopify](https://minishopify4806-aygwdka8gyhag3bg.northcentralus-01.azurewebsites.net/merchant)
@@ -12,7 +12,8 @@ the same Shop and Product models and repositories.
 1. Extract the ZIP and open the folder containing `pom.xml` in IntelliJ.
 2. Import it as a Maven project and choose JDK 17 or 21.
 3. Run `MiniShopifyApplication`.
-4. Visit http://localhost:8080 (redirects to `/merchant`).
+4. Visit http://localhost:8080 (redirects to the customer catalog at `/products`).
+   Use the Manage shops link to open `/merchant`.
 
 The project targets Java 17 bytecode, which also runs on Java 21. Keep the CI,
 Maven compiler settings, and Azure runtime compatible when integrating with your
@@ -46,6 +47,8 @@ in-memory H2 database and do not erase your application's saved data.
 - Shop form: name, description, and comma-separated categories/tags.
 - Normalized lowercase tags, with duplicate tags removed.
 - Merchant dashboard showing stored shops.
+- Shop search by name or tag, shop editing, and product editing/deletion.
+- Customer product-name search and category filtering, separately or together.
 - Product form: name, description, price in CAD, inventory quantity, picture.
 - Actual PNG/JPEG upload (up to 5 MB), stored in the database.
 - Product picture endpoint; pictures are checked using their content.
@@ -59,13 +62,27 @@ in-memory H2 database and do not erase your application's saved data.
 
 This is a shared merchant prototype: there is no login, merchant ownership check,
 or access control. Anyone with the URL can create shops and add products. Shop
-names are not unique. Categories/tags are a comma-separated string in `Shop.tags`.
-There is no product editing/deletion, customer search, customer-facing shop page,
-cart, checkout, order model, payment, or inventory decrement during purchase yet.
+names are not unique. Categories/tags are a comma-separated string in `Shop.tags`;
+products inherit their shop's categories. Product-name search matches partial
+names without case sensitivity, while category filters match a complete tag.
+There is no customer-facing individual shop page, cart, checkout, order model,
+payment, or inventory decrement during purchase yet.
 The merchant catalog is a preview of saved products. Do not treat stock validation
 on product creation as the final purchase-inventory rule.
 
-See [INTEGRATION.md](INTEGRATION.md) before combining contributions.
+See [integration.md](integration.md) before combining contributions.
+
+## Customer search
+
+Open `/products`, enter a product name, choose a category, or use both filters.
+Blank filters show all products; Clear filters restores the full catalog. Each
+result includes its picture, price, stock, shop name, and shop categories.
+
+Examples: `/products?name=shirt`, `/products?category=clothes`, and
+`/products?name=shirt&category=clothes`. Both filters ignore case and surrounding
+whitespace. Category matching uses whole tags, so `art` does not match `party`.
+The category dropdown lists normalized, unique shop tags. This feature keeps
+the existing H2 configuration and entity schema.
 
 ## Local persistence
 

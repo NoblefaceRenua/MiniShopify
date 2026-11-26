@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Browse products - Mini-Shopify</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<main>
+  <nav class="catalog-nav" aria-label="Main navigation">
+    <a th:href="@{/products}">Browse products</a>
+    <a th:href="@{/merchant}">Manage shops</a>
+  </nav>
+  <p class="eyebrow">Mini-Shopify</p>
+  <h1>Browse products</h1>
+  <p>Find products by name, category, or both.</p>
+
+  <form class="catalog-search" th:action="@{/products}" method="get" role="search">
+    <div>
+      <label for="product-name">Product name</label>
+      <input id="product-name" type="search" name="name" maxlength="100"
+             placeholder="Search product names" th:value="${name}">
+    </div>
+    <div>
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <option value="">All categories</option>
+        <option th:if="${!#strings.isEmpty(category) and !#lists.contains(categories, category)}"
+                th:value="${category}" th:text="${category}" selected></option>
+        <option th:each="item : ${categories}" th:value="${item}"
+                th:text="${item}" th:selected="${item == category}"></option>
+      </select>
+    </div>
+    <button type="submit">Search products</button>
+  </form>
+  <a class="back-link" th:if="${!#strings.isEmpty(name) or !#strings.isEmpty(category)}"
+     th:href="@{/products}">Clear filters</a>
+
+  <p role="status" th:if="${!#lists.isEmpty(products)}">
+    <span th:text="${#lists.size(products)}"></span>
+    <span th:text="${#lists.size(products) == 1 ? 'product found.' : 'products found.'}"></span>
+  </p>
+  <p role="status" th:if="${#lists.isEmpty(products) and #strings.isEmpty(name) and #strings.isEmpty(category)}">
+    No products yet. Check back soon.
+  </p>
+  <p role="status" th:if="${#lists.isEmpty(products) and (!#strings.isEmpty(name) or !#strings.isEmpty(category))}">
+    No products match your search. Try another name or category.
+  </p>
+
+  <section class="grid" aria-label="Products" th:unless="${#lists.isEmpty(products)}">
+    <article th:each="product : ${products}">
+      <img th:src="@{/products/{id}/image(id=${product.id})}" th:alt="${product.name}">
+      <h2 th:text="${product.name}"></h2>
+      <p th:text="${product.description}"></p>
+      <p>CAD $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span></p>
+      <p>In stock: <span th:text="${product.inventoryQuantity}"></span></p>
+      <p>Sold by <span th:text="${product.shop.name}"></span></p>
+      <p class="tags">Categories: <span th:text="${product.shop.tags}"></span></p>
+    </article>
+  </section>
+</main>
+</body>
+</html>

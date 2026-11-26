@@ -38,7 +38,7 @@ class ShopPagesTest {
 
     @Test
     void homeAndDashboardLoad() throws Exception {
-        mvc.perform(get("/")).andExpect(redirectedUrl("/merchant"));
+        mvc.perform(get("/")).andExpect(redirectedUrl("/products"));
         mvc.perform(get("/merchant")).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Your shops")));
     }

@@ -2,6 +2,7 @@ package org.example.minishopify.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import javax.imageio.ImageIO;
 import org.example.minishopify.model.Product;
@@ -25,6 +26,16 @@ public class ProductService {
 
     public List<Product> listProducts(Long shopId) {
         return products.findByShopIdOrderByIdAsc(shopId);
+    }
+
+    public List<Product> searchProducts(String name, String category) {
+        String searchName = name == null ? "" : name.trim();
+        String searchCategory = category == null ? "" : category.trim();
+        return products.findByNameContainingIgnoreCaseOrderByIdAsc(searchName).stream()
+                .filter(product -> searchCategory.isEmpty() ||
+                        Arrays.stream(product.getShop().getTags().split(","))
+                                .anyMatch(tag -> tag.trim().equalsIgnoreCase(searchCategory)))
+                .toList();
     }
 
     public Product getProduct(Long id) {

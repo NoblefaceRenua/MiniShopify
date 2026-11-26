@@ -1,9 +1,8 @@
 # Teammate integration contract
 
-This ZIP assumes the author of this contribution owns merchant shop/product
-creation, while the teammate owns customer discovery and browsing. Confirm that
-split with your team. If the team has an existing project, merge code into its
-package structure rather than replacing the whole project.
+Merchant shop/product management and customer product search share the models,
+repositories, and services below. Integrate changes into the existing package
+structure rather than replacing the whole project.
 
 ## Shared code
 
@@ -24,11 +23,12 @@ database. Update diagrams and tests if you change their fields or relationships.
 The product-to-shop relationship is unidirectional; there is no `shop.getProducts()`.
 The inventory field stores the available quantity, not a SKU or product identifier.
 
-## Existing merchant routes (HTML forms)
+## Existing routes (HTML forms)
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/` | Temporary redirect to merchant dashboard |
+| GET | `/` | Redirect to the customer product catalog |
+| GET | `/products?name=...&category=...` | Customer product search; filters can be combined |
 | GET | `/merchant` | List all shops for prototype management |
 | GET | `/merchant/shops/new` | New shop form |
 | POST | `/merchant/shops` | Save shop: name, description, tags |
@@ -42,10 +42,23 @@ the merchant shop page. Validation errors redisplay the form with messages.
 
 ## Customer work
 
-Recommended customer routes: `GET /shops?name=...&tag=...` for search and
-`GET /shops/{id}` for a customer-facing shop catalog. These do not collide with
-the merchant routes. Replace HomeController's `/` redirect with the customer home
-page when ready, and keep a link to `/merchant` during this prototype.
+`GET /products` now provides customer browsing and product-name/category search.
+The `name` parameter matches literal, partial product names ignoring case. The
+`category` parameter matches an exact comma-separated tag on the product's shop,
+also ignoring case. Both parameters are trimmed and combined with AND; omitting
+both lists all products. Products inherit categories from their shop rather than
+having a new category field. The catalog has a link to `/merchant`, and the
+merchant dashboard links back to `/products`.
+
+`ProductRepository.findByNameContainingIgnoreCaseOrderByIdAsc` loads each
+product's shop with an entity graph so the customer template works with
+`spring.jpa.open-in-view=false`. `ProductService.searchProducts` applies the
+whole-tag category filter. `ShopService.listCategories` supplies sorted, unique,
+lowercase tags for the category dropdown. No database schema or configuration
+change is needed.
+
+Possible future routes are `GET /shops?name=...&tag=...` for customer shop search
+and `GET /shops/{id}` for a customer shop catalog.
 
 You can add a method to ShopRepository for case-insensitive name search:
 
@@ -83,5 +96,5 @@ checkout, excessive quantities, duplicate cart lines, and concurrent purchases.
 6. Open a feature PR and obtain two teammate reviews before merging.
 7. Deploy the integrated main branch to the team's Mini-Shopify App Service.
 
-No customer code, cloud resource, GitHub issue, PR, or deployment is created by
-extracting this project. Those must be added through your team's repository.
+Cloud resources, GitHub issues, pull requests, and deployments are managed
+separately through your team's repository and cloud account.
