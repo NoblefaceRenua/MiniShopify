@@ -4,6 +4,9 @@ This contribution implements the merchant side: create a shop, add products with
 actual picture uploads, and view the saved shop catalog. The customer side can use
 the same Shop and Product models and repositories.
 
+### Here is the link to the MiniShopify application 
+[Minishopify](https://minishopify4806-aygwdka8gyhag3bg.northcentralus-01.azurewebsites.net/merchant)
+
 ## Run in IntelliJ
 
 1. Extract the ZIP and open the folder containing `pom.xml` in IntelliJ.

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title th:text="${shop.name}">Shop</title><link rel="stylesheet" th:href="@{/style.css}"></head>
+<body><main>
+    <a th:href="@{/merchant}">Back to shops</a>
+    <p role="status" class="success" th:if="${message}" th:text="${message}"></p>
+    <h1 th:text="${shop.name}"></h1>
+    <p th:text="${shop.description}"></p>
+    <p class="tags" th:text="${shop.tags}"></p>
+    <a class="button" th:href="@{/merchant/shops/{id}/products/new(id=${shop.id})}">Add product</a>
+    <a class="button"
+       th:href="@{/merchant/shops/{id}/edit(id=${shop.id})}">
+        Edit shop
+    </a>
+    <h2>Product catalog</h2>
+    <p th:if="${#lists.isEmpty(products)}">This shop has no products yet.</p>
+    <section class="grid">
+        <article th:each="product : ${products}">
+            <img th:src="@{/products/{id}/image(id=${product.id})}" th:alt="${product.name}">
+            <h3 th:text="${product.name}"></h3>
+            <p th:text="${product.description}"></p>
+            <p>CAD $<span th:text="${#numbers.formatDecimal(product.price, 1, 2)}"></span></p>
+            <p>In stock: <span th:text="${product.inventoryQuantity}"></span></p>
+            <a th:href="@{/merchant/shops/{id}/products/{pid}/edit(id=${shop.id},pid=${product.id})}">Edit</a>
+            <form method="post" th:action="@{/merchant/shops/{id}/products/{pid}/delete(id=${shop.id},pid=${product.id})}"
+                  onsubmit="return confirm('Delete this product?');" style="padding:0;border:0;display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </article>
+    </section>
+</main></body></html>

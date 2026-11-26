@@ -1,0 +1,22 @@
+# Local PostgreSQL for development: docker compose up -d
+# Local-only credentials. Azure uses its own, set in App Service environment variables.
+services:
+  postgres:
+    image: postgres:17
+    container_name: minishopify-postgres
+    environment:
+      POSTGRES_DB: minishopify
+      POSTGRES_USER: minishopify
+      POSTGRES_PASSWORD: minishopify
+    ports:
+      - "5432:5432"
+    volumes:
+      - minishopify-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minishopify -d minishopify"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  minishopify-postgres-data:

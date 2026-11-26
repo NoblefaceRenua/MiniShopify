@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mini-Shopify</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<main>
+  <p class="eyebrow">Mini-Shopify · Merchant</p>
+
+  <div class="page-header">
+    <h1>Your shops</h1>
+
+    <form class="search-form" th:action="@{/merchant}" method="get">
+      <input
+              type="search"
+              name="q"
+              placeholder="Search shops by name or tag..."
+              th:value="${q}"
+      >
+      <button type="submit">Search</button>
+    </form>
+    <a
+            th:if="${!#strings.isEmpty(q)}"
+            th:href="@{/merchant}"
+            class="back-link">
+      Back to all shops
+    </a>
+  </div>
+
+  <p>Create a shop, then add products to its catalog.</p>
+
+  <a class="button" th:href="@{/merchant/shops/new}">Create a shop</a>
+
+  <!-- No shops exist -->
+  <p th:if="${#lists.isEmpty(shops) and #strings.isEmpty(q)}">
+    No shops yet.
+  </p>
+
+  <!-- Search returned no results -->
+  <p th:if="${#lists.isEmpty(shops) and !#strings.isEmpty(q)}">
+    No shops found matching "<span th:text="${q}"></span>".
+  </p>
+
+  <!-- Shop results -->
+  <section class="grid" th:unless="${#lists.isEmpty(shops)}">
+    <article th:each="shop : ${shops}">
+      <h2>
+        <a th:href="@{/merchant/shops/{id}(id=${shop.id})}"
+           th:text="${shop.name}"></a>
+      </h2>
+      <p th:text="${shop.description}"></p>
+      <p class="tags" th:text="${shop.tags}"></p>
+    </article>
+  </section>
+
+</main>
+</body>
+</html>
